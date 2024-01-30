@@ -1,13 +1,22 @@
-﻿namespace FirstAPI.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FirstAPI.Models
 {
     public class Employee : IEquatable<Employee>
     {
+
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string? Pic { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public int? DepartmentId { get; set; }
+        //This one is just for navigation and will not be created as an attribute in table
+        [ForeignKey("DepartmentId")]
+        public Departmnet? Department { get; set; }
+
+
         public Employee()
         {
             Id = 0;

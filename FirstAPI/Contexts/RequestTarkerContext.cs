@@ -14,5 +14,6 @@ namespace FirstAPI.Contexts
             optionsBuilder.UseSqlServer(@"Data source=DESKTOP-9L5BOE7;Integrated Security=true;Initial catalog=dbRequestTraker");
         }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Departmnet> Departments { get; set; }
     }
 }

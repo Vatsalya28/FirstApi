@@ -22,6 +22,23 @@ namespace FirstAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("FirstAPI.Models.Departmnet", b =>
+                {
+                    b.Property<int>("DeparmentNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeparmentNumber"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DeparmentNumber");
+
+                    b.ToTable("Departments");
+                });
+
             modelBuilder.Entity("FirstAPI.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
@@ -32,6 +49,10 @@ namespace FirstAPI.Migrations
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("DepartmentId")
+                        .IsRequired()
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -50,7 +71,20 @@ namespace FirstAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("FirstAPI.Models.Employee", b =>
+                {
+                    b.HasOne("FirstAPI.Models.Departmnet", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 #pragma warning restore 612, 618
         }

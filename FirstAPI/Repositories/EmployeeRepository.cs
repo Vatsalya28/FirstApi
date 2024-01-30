@@ -1,6 +1,7 @@
 ﻿using FirstAPI.Contexts;
 using FirstAPI.Interfaces;
 using FirstAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstAPI.Repositories
 {
@@ -30,7 +31,7 @@ namespace FirstAPI.Repositories
 
         public async Task<List<Employee>> GetAsync()
         {
-            var employees = _context.Employees.ToList();
+            var employees = _context.Employees.Include(e=>e.Department).ToList();
             return employees;
         }
 
