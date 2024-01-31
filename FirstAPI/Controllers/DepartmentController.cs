@@ -10,9 +10,9 @@ namespace FirstAPI.Controllers
     public class DepartmentController : ControllerBase
     {
         IRepository<int, Departmnet> _repo;
-        public DepartmentController()
+        public DepartmentController(IRepository<int, Departmnet> repo)
         {
-            _repo = new DepartmentRepository();
+            _repo = repo;
         }
         [HttpGet]
         public async Task<List<Departmnet>> GetDepartmnets()

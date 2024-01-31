@@ -8,9 +8,9 @@ namespace FirstAPI.Repositories
     public class DepartmentRepository : IRepository<int, Departmnet>
     {
         readonly RequestTarkerContext _context;
-        public DepartmentRepository()
+        public DepartmentRepository(RequestTarkerContext context)
         {
-                _context = new RequestTarkerContext();
+            _context = context;
         }
         public async Task<Departmnet> Add(Departmnet item)
         {
@@ -19,14 +19,24 @@ namespace FirstAPI.Repositories
             return item;
         }
 
-        public Task<Departmnet> Delete(int key)
+        public async Task<Departmnet> Delete(int key)
         {
-            throw new NotImplementedException();
+            var department = await GetAsync(key);
+            _context? Departmnets.Remove(department);
+            return department;
         }
 
-        public Task<Departmnet> GetAsync(int key)
+        public async Task<Departmnet> GetAsync(int key)
         {
-            throw new NotImplementedException();
+            var departments = await GetAsync();
+            var department = departments.FirstOrDefault(d => d.DeparmentNumber == key);
+            if(department != null) {
+                return department;
+            }
+            else
+            {
+                throw new NoSuchDepartmentException;
+            }
         }
 
         public async Task<List<Departmnet>> GetAsync()

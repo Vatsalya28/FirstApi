@@ -1,16 +1,18 @@
 ﻿using FirstAPI.Contexts;
+using FirstAPI.Exceptions;
 using FirstAPI.Interfaces;
 using FirstAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace FirstAPI.Repositories
 {
     public class EmployeeRepository : IRepository<int, Employee>
     {
         readonly RequestTarkerContext _context;
-        public EmployeeRepository()
+        public EmployeeRepository(RequestTarkerContext context)
         {
-            _context = new RequestTarkerContext();
+            _context = context;
         }
         public async Task<Employee> Add(Employee item)
         {
@@ -19,25 +21,37 @@ namespace FirstAPI.Repositories
             return item;
         }
 
-        public Task<Employee> Delete(int key)
+        public async Task<Employee> Delete(int key)
         {
-            throw new NotImplementedException();
+            var employee = await GetAsync(key);
+            _context?.Employees.Remove(employee);
+            return employee;
         }
 
-        public Task<Employee> GetAsync(int key)
+        public async Task<Employee> GetAsync(int key)
         {
-            throw new NotImplementedException();
+            var employees = await GetAsync();
+            var employee = employees.FirstOrDefault(e => e.Id == key);
+            if (employee != null)
+                return employee;
+            throw new NoSuchEmployeeException();
         }
 
         public async Task<List<Employee>> GetAsync()
         {
-            var employees = _context.Employees.Include(e=>e.Department).ToList();
+            var employees = _context.Employees.Include(e => e.Department).ToList();
             return employees;
         }
 
-        public Task<Employee> Update(Employee item)
+        public async Task<Employee> Update(Employee item)
         {
-            throw new NotImplementedException();
+            var employee = await GetAsync(item.Id);
+            _context.Entry<Employee>(item).State = EntityState.Modified;
+            //the above statement generates a update query when the save changesi s called for,
+            //for all attributes except the primary  key. 
+            //Use teh primary key in the where clause of the update query
+            _context.SaveChanges();
+            return item;
         }
     }
 }

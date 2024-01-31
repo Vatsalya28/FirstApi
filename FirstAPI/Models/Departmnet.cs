@@ -7,5 +7,7 @@ namespace FirstAPI.Models
         [Key]
         public int DeparmentNumber { get; set; }
         public string Name { get; set; }
+
+        public ICollection<Employee> Employees { get; set; }
     }
 }
